@@ -127,4 +127,8 @@ This is a portfolio project using a secondary-source dataset. Results describe t
 
 ## Author
 
-[Your name] · [LinkedIn] · [Email]
+**Sarthak Jaykar**
+
+LinkedIn: https://www.linkedin.com/in/sarthak-jaykar
+
+GitHub: https://github.com/sarthak-jaykar
