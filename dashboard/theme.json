@@ -1,0 +1,42 @@
+{
+  "name": "HR_Professional",
+  "dataColors": [
+    "#6F42C1",
+    "#4E79A7",
+    "#28A745",
+    "#DC3545",
+    "#6C757D",
+    "#8E63D2"
+  ],
+  "background": "#F5F7FA",
+  "foreground": "#111827",
+  "tableAccent": "#6F42C1",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [
+          {
+            "show": true,
+            "fontSize": 13,
+            "color": {
+              "solid": {
+                "color": "#111827"
+              }
+            }
+          }
+        ],
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}
