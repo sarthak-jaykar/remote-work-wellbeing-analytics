@@ -1,134 +1,157 @@
-# Remote Work & Employee Wellbeing Analytics (Python EDA to Power BI)
+# Remote Work & Employee Wellbeing Analytics
 
-Python exploratory analysis and a Power BI dashboard describing how work location, stress, sleep, work-life balance and company support vary across 5,000 employees. The Python exploration came first. The Power BI dashboard was built afterwards from a cleaned version of the same dataset.
+### Work Location, Satisfaction, Stress and Work-Life Balance Dashboard
 
-> **Disclaimer:** The indicators are self-reported or dataset-provided. This is a descriptive analysis of one secondary-source dataset. It is not a clinical assessment, and it does not show that remote work causes any mental-health outcome.
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?logo=pandas&logoColor=white)
+![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?logo=scipy&logoColor=white)
+![Seaborn](https://img.shields.io/badge/Seaborn-4C72B0)
+![Domain](https://img.shields.io/badge/Domain-HRM-success)
+![Data Model](https://img.shields.io/badge/Data%20Model-Single%20Table-blue)
 
-![Remote work overview](screenshots/01_remote_work_overview.png)
+[![Dashboard Preview](screenshots/01_remote_work_overview.png)](screenshots/01_remote_work_overview.png)
 
-## Business Problem
+*Select the image to view it at full size.*
 
-Organisations offering remote and hybrid work want to know whether work location is linked to employee satisfaction, stress, productivity, and work-life balance. Before making any decision, they need to know how large those differences are, and whether they are larger than the variation within each group.
+---
 
-## Objectives
+## Project Overview
 
-1. Describe the workforce and its work arrangements.
-2. Compare satisfaction, stress, productivity, and sleep across work locations and other groups.
-3. Check whether the observed associations are larger than chance, using chi-square tests of independence.
-4. Present the results in a Power BI dashboard that states clearly what the data does and does not show.
+Organisations offering remote and hybrid work need to know whether work location is linked to satisfaction, stress, productivity, and work-life balance, and how large any differences are compared with normal variation within each group.
 
-## Dataset
+This project analyses 5,000 employee records to describe those patterns, test them with chi-square tests of independence, and present the results in a two-page Power BI dashboard. The aim is to show what the data supports, and what it does not.
 
-| Item | Detail |
-|---|---|
-| Source | Secondary source: Kaggle dataset "Remote Work and Mental Health", as linked in the original project README. Licence not verified. |
-| Rows | 5,000 employees, no duplicate rows or IDs |
-| Columns | 20 original: Age, Gender, Job_Role, Industry, Years_of_Experience, Work_Location, Hours_Worked_Per_Week, Number_of_Virtual_Meetings, Work_Life_Balance_Rating, Stress_Level, Mental_Health_Condition, Access_to_Mental_Health_Resources, Productivity_Change, Social_Isolation_Rating, Satisfaction_with_Remote_Work, Company_Support_for_Remote_Work, Physical_Activity, Sleep_Quality, Region |
-| Missing values | Mental_Health_Condition: 1,196 blank (24%). Physical_Activity: 1,629 blank (33%). |
+The results can inform whether work location belongs in wellbeing and engagement planning, and which measures are worth collecting properly with a dedicated survey.
 
-### Limitations
+### Data Source
 
-- **Category shares are almost uniform.** Most categories sit near one third of employees (for example, Work Location: 34.3%, 33.0%, 32.7%). Real survey data rarely looks like this. Treat the dataset as illustrative. Findings describe this file only.
-- **Cross-sectional and self-reported.** There is no time dimension, so change over time cannot be assessed, and reporting is subjective.
-- **Mental_Health_Condition is a categorical field** with values Anxiety, Burnout, and Depression, plus blanks. It is not a diagnosis and was not verified.
-- **Productivity_Change is a three-level category** (Increase, No Change, Decrease). It is not a measured productivity value.
-- **No causal design.** Associations are not evidence that remote work causes or prevents any outcome.
+**Data Source:** Secondary data obtained from publicly available online sources for educational and analytical practice. The dataset was used for data preparation, analysis, dashboard development, and business insights.
 
-## Data Preparation
+---
 
-Performed in `scripts/prepare_and_compare.py`. The original file is kept unchanged in `data/raw/`.
+## Key Metrics
 
-- Checked for missing values, duplicate rows, and duplicate Employee IDs. None were duplicated.
-- Kept blank values in Mental_Health_Condition and Physical_Activity, labelled them "Not reported", and did not drop rows.
-- Added an ordinal Satisfaction_Score (Unsatisfied = 1, Neutral = 2, Satisfied = 3) for averages.
-- Added bands: Age_Group (22-29, 30-39, 40-49, 50-60), Hours_Band (20-39, 40-49, 50-60), and Experience_Band (1-5, 6-10, 11-20, 21-35).
+| Employees | Remote Share | Satisfied with Remote Work | Average Hours per Week | Reporting a Mental-Health Condition |
+| --- | --- | --- | --- | --- |
+| **5,000** | **34.3%** (1,714) | **33.5%** | **39.6** | **76.1%** |
 
-## Python EDA
-
-The corrected notebook is in `notebook/` (see the corrections below). It covers data overview, missing values, descriptive statistics, distributions of age and job role, gender and industry, satisfaction by experience, work location against productivity change, work-life balance, mental-health and resource access, virtual meetings against satisfaction, physical activity against satisfaction, a correlation matrix, and a 3D view of age, hours, and satisfaction.
-
-**Corrections made to the notebook (the analysis itself was not rewritten):**
-- A cell overwrote the real data with a hand-typed 5-row sample. The plots that followed were drawn from that sample. The cell was removed, along with the template cells that followed it.
-- The data path pointed to Kaggle. It now reads the file from the project folder.
-- The 3D satisfaction plot failed on real data because satisfaction is text. It now uses the ordered 1 to 3 scale for plotting only.
-- The figures in the last two plot cells were regenerated from the real data.
-
-The notebook's "About Author" section, which credits the original Kaggle author, is unchanged.
+---
 
 ## Key Findings
 
-All figures come from `scripts/prepare_and_compare.py`. Results are descriptive, and associations are not causes.
+All findings are descriptive. Each test is a chi-square test of independence at the 0.05 level. Five tests were run, so the threshold for significance after a Bonferroni correction is 0.01.
 
-- **Most groups look alike.** Satisfied 33.5%, high stress 33.7%, poor sleep 33.7%, productivity increase 31.7%. Across work locations, the shares for stress and productivity are within about two points of each other.
-- **Satisfaction differs by work location, though the difference is small.** Remote workers are the least likely to report being satisfied (30.3%), compared with Hybrid (34.2%) and Onsite (36.2%). This is significant at p = 0.006 (chi-square, 4 degrees of freedom). It remains significant after a Bonferroni correction for the five tests run (0.006 is below 0.01).
-- **Work location is not associated with stress or productivity change.** Stress by work location: p = 0.75. Productivity change by work location: p = 0.71.
-- **Stress is not associated with satisfaction.** Chi-square p = 0.29.
-- **Access to mental-health resources is not associated with the mental-health condition field.** Chi-square p = 0.37.
-- **Hours worked are not related to work-life balance.** The correlation is 0.001. Average hours range only from 39.5 to 39.8 per week across work locations.
-- **Work-life balance is almost flat across stress levels.** Averages are 3.03 (high stress), 3.00 (low), and 2.92 (medium), on a 1 to 5 scale. No test was run on this comparison.
-- **Company support shows no consistent pattern.** Satisfied share ranges from 31.9% (support score 1) to 36.0% (score 5), with no steady trend in between. No test was run on this comparison.
+1. **Satisfaction differs by work location, but the difference is modest.** Satisfied share is 30.3% for remote, 34.2% for hybrid and 36.2% for onsite workers (p = 0.006). This still falls below the Bonferroni threshold.
+2. **No significant association was detected between work location and stress (p = 0.75) or productivity change (p = 0.71).**
+3. **No significant association was detected between stress level and satisfaction (p = 0.29).**
+4. **No significant association was detected between access to mental-health resources and the recorded condition field (p = 0.37).**
+5. **Hours worked and work-life balance are effectively unrelated** (correlation 0.001). Average hours vary only from 39.5 to 39.8 across work locations.
+6. **Work-life balance barely changes across stress levels:** 3.03 (high), 3.00 (low), 2.92 (medium) on a 1 to 5 scale. No test was run on this comparison.
+7. **Company support shows no consistent pattern.** Satisfied share ranges from 31.9% (support score 1) to 36.0% (score 5), without a steady trend. No test was run.
 
-**What these findings do not show:** They do not show that remote work causes lower satisfaction, higher stress, or any other outcome. The associations are small, the dataset is uniform across categories, and the analysis is cross-sectional. Further work would need real, observed data, a stronger design, and controls for role and workload.
+**What these findings do not show:** They do not show that remote work causes lower satisfaction, higher stress, or any other outcome. The associations are small, the data is cross-sectional and self-reported, and most categories are split almost evenly, so the dataset should be treated as illustrative.
 
-## Dashboard
+---
 
-**Power BI file:** `dashboard/remote_work_wellbeing_dashboard.pbix` (to be built; see `docs/BUILD_GUIDE.md`)
+## Business Problem and Objectives
 
-| Page | Purpose | Key measures |
-|---|---|---|
-| Remote Work & Workforce Overview | Work-location split, satisfaction and productivity by location, industry mix | Total Employees, Remote Share %, Satisfied Share %, Avg Hours per Week |
-| Employee Wellbeing & Work-Life Balance | Stress, sleep, work-life balance, company support, and the mental-health condition field | Avg Work-Life Balance, High Stress Share %, Poor Sleep Share %, Access to Resources %, Satisfied Share by Company Support |
+Work location is a common hybrid-work question, but decisions about it need to rest on how large any differences are and whether they stand out from ordinary variation.
 
-## Tools and Techniques
+The project aims to:
+1. Describe the workforce and its work arrangements.
+2. Compare satisfaction, stress, productivity and sleep across work locations and other groups.
+3. Test whether observed associations are larger than chance.
+4. Present results in a dashboard that states clearly what the data does and does not show.
 
-- **Python:** pandas for cleaning, grouping, and bands; scipy for chi-square tests; seaborn and matplotlib for the EDA notebook.
-- **Power BI:** data model, DAX measures, slicers, 100% stacked charts, a matrix, and a company-support column chart.
+---
+
+## Tools and Methodology
+
+- **Python (pandas):** checked for missing values and duplicate rows, labelled blank values as "Not reported" rather than dropping them, added an ordinal satisfaction score and age, hours and experience bands.
+- **SciPy:** five chi-square tests of independence.
+- **Seaborn and Matplotlib:** exploratory analysis in a Jupyter notebook.
+- **Power BI:** one data table, 11 DAX measures, two report pages with slicers, 100% stacked charts, a matrix and a column chart.
+
+**Data notes**
+- Mental_Health_Condition: 1,196 blank (24%), labelled "Not reported."
+- Physical_Activity: 1,629 blank (33%), labelled "Not reported."
+- Most categories sit near one third of employees each, which is unusual for survey data.
+
+**Method notes**
+- Chi-square tests cover only the five pairs listed above. Other comparisons are descriptive.
+- Mental_Health_Condition is a recorded category, not a diagnosis.
+- Productivity_Change is a three-level category, not a measured productivity value.
+
+---
 
 ## Repository Structure
 
-```
+```text
 remote-work-wellbeing-analytics/
 ├── README.md
 ├── data/
-│   ├── raw/
-│   │   └── Impact_of_Remote_Work_on_Mental_Health.csv
+│   ├── Impact_of_Remote_Work_on_Mental_Health_raw.csv
 │   └── cleaned_remote_work_wellbeing.csv
-├── notebook/
-│   └── remote-work-mental-health-eda.ipynb
-├── scripts/
-│   └── prepare_and_compare.py
 ├── dashboard/
-│   └── remote_work_wellbeing_dashboard.pbix
-├── dax/
+│   └── WFH-workforce-analytics.pbix
+├── documentation/
 │   └── measures.dax
-├── docs/
-│   ├── BUILD_GUIDE.md
-│   └── CHANGE_LOG.md
+├── script/
+│   ├── prepare_and_compare.py
+│   ├── remote-work-mental-health-eda.ipynb
+│   └── theme.json
 └── screenshots/
     ├── 01_remote_work_overview.png
     └── 02_wellbeing_worklife.png
 ```
 
-## How to View and Run
+---
 
-**Dashboard:** open `dashboard/remote_work_wellbeing_dashboard.pbix` in Power BI Desktop. If a file error appears, point the source to `data/cleaned_remote_work_wellbeing.csv` (Home > Transform data > Data source settings).
+## Dashboard
 
-**Notebook:** open `notebook/remote-work-mental-health-eda.ipynb` in Jupyter. Run from the folder that contains `data/raw/`, or update the path in the first code cell.
+Two report pages, each with slicers and descriptive text boxes.
 
-**Data preparation and comparisons:**
-```
+1. **[Remote Work & Workforce Overview](screenshots/01_remote_work_overview.png):** total employees, remote share, satisfied share and average hours; employees by work location; satisfaction and productivity change by work location; employees by industry. Slicers: age group, gender, job role.
+2. **[Employee Wellbeing & Work-Life Balance](screenshots/02_wellbeing_worklife.png):** work-life balance by stress level; satisfied share by company support score; employees by sleep quality and stress level; recorded mental-health conditions. Slicers: location, industry, region.
+
+Measures are in [`documentation/measures.dax`](documentation/measures.dax).
+
+---
+
+## How to Reproduce
+
+**Data preparation and tests**
+
+```bash
 pip install pandas scipy
-python scripts/prepare_and_compare.py
+python script/prepare_and_compare.py
 ```
+
+The script reads the raw file, writes `data/cleaned_remote_work_wellbeing.csv`, and prints the group comparisons and chi-square results.
+
+**Notebook:** open `script/remote-work-mental-health-eda.ipynb` in Jupyter. The notebook reads the raw file from `data/`.
+
+**Dashboard:** open `dashboard/WFH-workforce-analytics.pbix` in Power BI Desktop. If a file error appears, go to **Home → Transform data → Data source settings** and point the source to `data/cleaned_remote_work_wellbeing.csv`.
+
+---
+
+## Limitations
+
+- **Secondary data with near-uniform categories.** Most categories sit at about one third each. Treat the findings as illustrative of the method.
+- **Cross-sectional and self-reported.** There is no time dimension, so change over time cannot be assessed.
+- **No causal design.** Work location was not randomly assigned. The associations are not evidence that remote work causes any outcome.
+- **Non-significant does not mean no effect.** Tests not reaching significance mean no association was detected in this sample.
+- **Small effects.** The one significant result has a small effect size.
+- **Recorded, not diagnosed.** Mental_Health_Condition is a recorded category and has not been verified.
+- **"Not reported" is included in the tests**, so the access-to-resources test runs across four categories of condition.
+
+---
 
 ## Disclaimer
 
-This is a portfolio project using a secondary-source dataset. Results describe that dataset only. They are not clinical, do not identify causes, and should not be read as evidence about any real organisation.
+This is a portfolio project using secondary data. Results describe that dataset only. They are not clinical assessments, do not identify causes, and should not be read as evidence about any real organisation.
 
-## Author
+---
 
-**Sarthak Jaykar**
-
-LinkedIn: https://www.linkedin.com/in/sarthak-jaykar
-
-GitHub: https://github.com/sarthak-jaykar
+**Author:** [Sarthak Jaykar](https://www.linkedin.com/in/sarthak-jaykar/)
