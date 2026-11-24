@@ -73,5 +73,12 @@ tests = [("Work_Location", "Stress_Level"),
          ("Stress_Level", "Satisfaction_with_Remote_Work"),
          ("Access_to_Mental_Health_Resources", "Mental_Health_Condition")]
 for a, b in tests:
-    chi2, p, dof, _ = chi2_contingency(pd.crosstab(df[a], df[b]))
-    print(f"  {a} x {b}: chi2={chi2:.2f}, dof={dof}, p={p:.4f}")
+    table = pd.crosstab(df[a], df[b])
+    chi2, p, dof, _ = chi2_contingency(table)
+    n = table.to_numpy().sum()
+    min_dimension = min(table.shape[0] - 1, table.shape[1] - 1)
+    cramers_v = (chi2 / (n * min_dimension)) ** 0.5 if min_dimension > 0 else float("nan")
+    print(
+        f"  {a} x {b}: chi2={chi2:.2f}, dof={dof}, "
+        f"p={p:.4f}, Cramer's V={cramers_v:.3f}"
+    )
