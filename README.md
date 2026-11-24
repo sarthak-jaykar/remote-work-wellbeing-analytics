@@ -42,7 +42,7 @@ The results can inform whether work location belongs in wellbeing and engagement
 
 All findings are descriptive. Each test is a chi-square test of independence at the 0.05 level. Five tests were run, so the threshold for significance after a Bonferroni correction is 0.01.
 
-1. **Satisfaction differs by work location, but the difference is modest.** Satisfied share is 30.3% for remote, 34.2% for hybrid and 36.2% for onsite workers (p = 0.006). This still falls below the Bonferroni threshold.
+1. **Satisfaction differs by work location, but the association is negligible.** Satisfied share is 30.3% for remote, 34.2% for hybrid and 36.2% for onsite workers (p = 0.006; Cramér's V = 0.038). The p-value is below the Bonferroni-adjusted threshold of 0.01, while the effect size indicates a very weak association.
 2. **No significant association was detected between work location and stress (p = 0.75) or productivity change (p = 0.71).**
 3. **No significant association was detected between stress level and satisfaction (p = 0.29).**
 4. **No significant association was detected between access to mental-health resources and the recorded condition field (p = 0.37).**
@@ -50,7 +50,7 @@ All findings are descriptive. Each test is a chi-square test of independence at 
 6. **Work-life balance barely changes across stress levels:** 3.03 (high), 3.00 (low), 2.92 (medium) on a 1 to 5 scale. No test was run on this comparison.
 7. **Company support shows no consistent pattern.** Satisfied share ranges from 31.9% (support score 1) to 36.0% (score 5), without a steady trend. No test was run.
 
-**What these findings do not show:** They do not show that remote work causes lower satisfaction, higher stress, or any other outcome. The associations are small, the data is cross-sectional and self-reported, and most categories are split almost evenly, so the dataset should be treated as illustrative.
+**What these findings do not show:** They do not show that remote work causes lower satisfaction, higher stress, or any other outcome. The observed association between work location and satisfaction is negligible (Cramér's V = 0.038). The data is cross-sectional and self-reported, and most categories are split almost evenly, so the dataset should be treated as illustrative.
 
 ---
 
@@ -69,7 +69,7 @@ The project aims to:
 ## Tools and Methodology
 
 - **Python (pandas):** checked for missing values and duplicate rows, labelled blank values as "Not reported" rather than dropping them, added an ordinal satisfaction score and age, hours and experience bands.
-- **SciPy:** five chi-square tests of independence.
+- **SciPy:** five chi-square tests of independence; Cramér's V is calculated for each test to report association strength.
 - **Seaborn and Matplotlib:** exploratory analysis in a Jupyter notebook.
 - **Power BI:** one data table, 11 DAX measures, two report pages with slicers, 100% stacked charts, a matrix and a column chart.
 
@@ -79,7 +79,7 @@ The project aims to:
 - Most categories sit near one third of employees each, which is unusual for survey data.
 
 **Method notes**
-- Chi-square tests cover only the five pairs listed above. Other comparisons are descriptive.
+- Chi-square tests cover only the five pairs listed above. Cramér's V is reported as the effect-size measure; other comparisons are descriptive.
 - Mental_Health_Condition is a recorded category, not a diagnosis.
 - Productivity_Change is a three-level category, not a measured productivity value.
 
@@ -128,7 +128,7 @@ pip install pandas scipy
 python script/prepare_and_compare.py
 ```
 
-The script reads the raw file, writes `data/cleaned_remote_work_wellbeing.csv`, and prints the group comparisons and chi-square results.
+The script reads the raw file, writes `data/cleaned_remote_work_wellbeing.csv`, and prints the group comparisons, chi-square results and Cramér's V effect sizes.
 
 **Notebook:** open `script/remote-work-mental-health-eda.ipynb` in Jupyter. The notebook reads the raw file from `data/`.
 
@@ -154,4 +154,4 @@ This is a portfolio project using secondary data. Results describe that dataset 
 
 ---
 
-**Author:** [Sarthak Jaykar](https://www.linkedin.com/in/sarthak-jaykar/)
+**Author:** [Sarthak Jaykar](https://www.linkedin.com/in/sarthak-jaykar/) · [GitHub](https://github.com/sarthak-jaykar)
